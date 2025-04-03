@@ -1,5 +1,5 @@
 package com.aithinkers.GoldenGym.security;
-
+import com.aithinkers.GoldenGym.security.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -7,26 +7,27 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
-    private final UserDetailsService userDetailsService;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
-    public SecurityConfig(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public SecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl) {
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
         .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/register", "/otp-verification", "/login").permitAll()
+                .requestMatchers("/register", "/otp-verification", "/login","/home").permitAll()
                 .requestMatchers("/members/**").hasAuthority("ROLE_MEMBER") // Ensure this is correct
                 .requestMatchers("/trainers/**").hasAuthority("ROLE_TRAINER")
                 .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
@@ -35,8 +36,8 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/authenticateTheUser")
-               // .defaultSuccessUrl("/", true) // Redirect members correctly
-                .successHandler(new CustomLoginSuccessHandler())
+                .defaultSuccessUrl("/home", true) // Redirect members correctly
+                //.successHandler(new CustomLoginSuccessHandler())
                 .permitAll()
             )
             .logout(logout -> logout
@@ -44,10 +45,11 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/login?logout")
                 .permitAll()
             )
-            .csrf(csrf -> csrf.disable()) // Uncomment if using API requests
+            // Uncomment if using API requests
             .exceptionHandling(exception -> exception
                 .accessDeniedPage("/access-denied")
             );
+        http.csrf(customizer ->customizer.disable());
 
         return http.build();
     }
@@ -62,10 +64,10 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-  /*  @Bean
+    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
-    } */
+    } 
     
     @Bean
     public AuthenticationManager authManager(HttpSecurity http, CustomAuthenticationProvider authProvider) throws Exception {
@@ -78,8 +80,8 @@ public class SecurityConfig {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setUserDetailsService(userDetailsServiceImpl);
+        authProvider.setPasswordEncoder(new BCryptPasswordEncoder(12));
         return authProvider;
     }
 }

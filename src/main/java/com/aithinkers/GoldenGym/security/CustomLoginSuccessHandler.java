@@ -24,14 +24,14 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
             // Check role and redirect accordingly
             switch (role) {
-                case "MEMBER":
+                case "ROLE_MEMBER":
                     response.sendRedirect("/members");
                     return;
-                case "TRAINER":
+                case "ROLE_TRAINER":
                     response.sendRedirect("/trainers");
                     return;
-                case "ADMIN":
-                    response.sendRedirect("/admin/dashboard");
+                case "ROLE_ADMIN":
+                    response.sendRedirect("admins");
                     return;
             }
         }

@@ -93,4 +93,13 @@ public class User {
     public void setOtpVerifications(List<OtpVerification> otpVerifications) {
         this.otpVerifications = otpVerifications;
     }
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", email=" + email + ", mobile=" + mobile + ", password="
+				+ password + ", isVerified=" + isVerified + ", authorities=" + authorities + ", otpVerifications="
+				+ otpVerifications + "]";
+	}
+    
+    
 }

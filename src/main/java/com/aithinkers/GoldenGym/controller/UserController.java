@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.aithinkers.GoldenGym.entity.Authority;
@@ -15,20 +17,22 @@ import com.aithinkers.GoldenGym.entity.User;
 import com.aithinkers.GoldenGym.service.AuthorityService;
 import com.aithinkers.GoldenGym.service.OtpService;
 import com.aithinkers.GoldenGym.service.UserService;
+import com.aithinkers.GoldenGym.service.UserServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
 
 @Controller
+@RequestMapping
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
     private final OtpService otpService;
     private final AuthorityService authorityService;
 
     @Autowired
-    public UserController(UserService userService, OtpService otpService, AuthorityService authorityService) {
-        this.userService = userService;
+    public UserController(UserServiceImpl userServiceImpl, OtpService otpService, AuthorityService authorityService) {
+        this.userServiceImpl = userServiceImpl;
         this.otpService = otpService;
         this.authorityService = authorityService;
         
@@ -56,7 +60,7 @@ public class UserController {
         user.setVerified(false); // Initially not verified
 
         // Save user
-        userService.registerUser(user);
+        userServiceImpl.registerUser(user);
 
         // Assign Role in Authority table
         Authority authority = new Authority();
@@ -72,18 +76,76 @@ public class UserController {
     }
     
     
-    @GetMapping("/members")
-    public String showMembers(Model model) {
-        List<User> members = userService.getUsersByRole("ROLE_MEMBER");
-        model.addAttribute("users", members);
-        return "members";
-    }
+
+	@GetMapping("/showFormForUpdate")
+	public String showFormForUpdate(@RequestParam("userId") long theId,
+									Model theModel) {
+
+		// get the member from the service
+		User theUser = userServiceImpl.findById(theId);
+
+		// set member as a model attribute to pre-populate the form
+		theModel.addAttribute("user", theUser);
+
+		// send over to our form
+		return "admin-dashboard";
+	}
+	@PostMapping("/save")
+	public String saveUser(@ModelAttribute("user") User theUser) {
+
+		// save the member
+		userServiceImpl.save(theUser);
+
+		// use a redirect to prevent duplicate submissions
+		return "redirect:/members";
+	}
+	
+	
+	@GetMapping("/delete")
+	public String delete(@RequestParam("userId") long theId) {
+
+		// delete the member
+		userServiceImpl.deleteById(theId);
+
+		// redirect to members
+		return "redirect:/members";
+
+	}
+	
+	
+	
+	
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     @GetMapping("/trainers")
     public String showTrainers(Model model) {
-        List<User> trainers = userService.getUsersByRole("ROLE_TRAINER");
+        List<User> trainers = userServiceImpl.getUsersByRole("ROLE_TRAINER");
         model.addAttribute("users", trainers);
         return "trainers";
+    }
+    
+    @GetMapping("/admins")
+    public String showAdmin(Model model) {
+        List<User> admins = userServiceImpl.getAll();
+        model.addAttribute("users", admins);
+        return "admin-dashboard";
     }
     
 
@@ -95,9 +157,9 @@ public class UserController {
 
     @PostMapping("/otp-verification")
     public String verifyOtp(@RequestParam String mobile, @RequestParam String otp) {
-        Optional<User> user = userService.findByMobile(mobile);
+        Optional<User> user = userServiceImpl.findByMobile(mobile);
         if (user.isPresent() && otpService.verifyOtp(user.get(), otp)) {
-            userService.verifyUser (user.get()); // Mark user as verified
+            userServiceImpl.verifyUser (user.get()); // Mark user as verified
             return "redirect:/login"; // Redirect to login page after successful verification
         }
         return "otp-verification"; // Return to OTP verification if failed

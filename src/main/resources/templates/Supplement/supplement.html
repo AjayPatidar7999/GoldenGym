@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Supplements</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        /* Background styling */
+        body {
+            background: url('/images/supp-back.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Container styling */
+        .container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Heading */
+        h2 {
+            color: gold;
+            font-size: 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 5px rgba(255, 215, 0, 0.7);
+        }
+
+        /* Transparent table */
+        .table {
+            background: transparent;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table th {
+            background: rgba(255, 215, 0, 0.7); /* Semi-transparent gold */
+            color: black;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .table td {
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+            color: white;
+            vertical-align: middle;
+        }
+
+        /* Image */
+        img {
+            border-radius: 10px;
+            border: 2px solid gold;
+        }
+
+        /* Buttons */
+        .btn {
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .btn-primary {
+            background: gold;
+            border: none;
+            color: black;
+        }
+
+        .btn-success {
+            background: #28a745;
+            border: none;
+        }
+
+        .btn-warning {
+            background: #ffcc00;
+            color: black;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        /* Form elements */
+        .form-select, .form-control {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid gold;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h2 class="text-center">Available Supplements</h2>
+
+        <!-- Category Filter -->
+        <form method="get" action="/supplements/slist" class="mb-4 text-center">
+            <label for="category" class="fw-bold">Filter by Category:</label>
+            <select name="category" id="category" class="form-select w-25 d-inline">
+                <option value="">All</option>
+                <option value="Protein">Protein</option>
+                <option value="Vitamins">Vitamins</option>
+                <option value="Pre-Workout">Pre-Workout</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+
+        <!-- Supplements List -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Price (₹)</th>
+                    <th>Category</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="supplement : ${supplements}">
+                    <td>
+                        <img th:src="${supplement.imageUrl}" alt="Supplement Image" width="100" height="100">
+                    </td>
+                    <td th:text="${supplement.name}"></td>
+                    <td th:text="${supplement.price}"></td>
+                    <td th:text="${supplement.category}"></td>
+                    <td>
+                        <form th:action="@{/supplements/add-to-cart}" method="post">
+                            <input type="hidden" name="id" th:value="${supplement.id}">
+                            <input type="number" name="quantity" value="1" min="1" class="form-control mb-2">
+                            <button type="submit" class="btn btn-success">Add to Cart</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Cart Link -->
+        <div class="text-center mt-4">
+            <a href="/supplements/cart" class="btn btn-warning">Go to Cart</a>
+            <a href="/home" class="btn btn-secondary">Back to Home Page</a>
+        </div>
+    </div>
+</body>
+</html>

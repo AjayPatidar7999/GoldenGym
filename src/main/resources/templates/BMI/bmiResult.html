@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>BMI Result</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url('/images/bmiresult.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.4); /* Semi-transparent */
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: none; /* Removed black shadow */
+            width: 50%; /* Reduced width */
+            max-width: 400px; /* Limits max size */
+            margin-top: 5%;
+        }
+
+        h2 {
+            color: gold;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 5px rgba(255, 215, 0, 0.7);
+        }
+
+        .btn {
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 90%;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .btn-primary {
+            background: gold;
+            border: none;
+            color: black;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2); /* Light transparent button */
+            border: 1px solid gold;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: gold;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <h2>BMI Result</h2>
+        <p><strong>Height:</strong> <span th:text="${bmi.height}"></span> meters</p>
+        <p><strong>Weight:</strong> <span th:text="${bmi.weight}"></span> kg</p>
+        <p><strong>BMI:</strong> <span th:text="${bmi.bmi}"></span></p>
+        <p><strong>Category:</strong> <span th:text="${bmi.category}"></span></p>
+        
+        <a href="/bmi" class="btn btn-primary mt-2">Calculate Again</a>
+        <a href="/home" class="btn btn-secondary mt-2">Back to Home Page</a>
+    </div>
+</body>
+</html>
