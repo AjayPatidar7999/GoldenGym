@@ -29,6 +29,18 @@ public class SupplementServiceImpl implements SupplementService{
 	    public Supplement getSupplementById(Long id) {
 	        return supplementRepository.findById(id).orElse(null);
 	    }
+	    
+
+@Override
+public Supplement saveSupplement(Supplement supplement) {
+    return supplementRepository.save(supplement);
+}
+
+@Override
+public void deleteSupplement(Long id) {
+    supplementRepository.deleteById(id);
+}
+	    
 	
 }
 

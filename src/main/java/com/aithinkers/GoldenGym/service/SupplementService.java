@@ -13,4 +13,8 @@ public interface SupplementService {
 	List<Supplement> getAllSupplements();
 	 List<Supplement> getSupplementsByCategory(String category);
 	 Supplement getSupplementById(Long id);
+	 Supplement saveSupplement(Supplement supplement);
+	 void deleteSupplement(Long id);
+
+	 
 }

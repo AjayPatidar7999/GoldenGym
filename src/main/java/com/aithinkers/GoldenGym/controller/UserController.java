@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping
+
 public class UserController {
 
     private final UserServiceImpl userServiceImpl;
@@ -97,7 +97,7 @@ public class UserController {
 		userServiceImpl.save(theUser);
 
 		// use a redirect to prevent duplicate submissions
-		return "redirect:/members";
+		return "redirect:/admins";
 	}
 	
 	
@@ -108,40 +108,11 @@ public class UserController {
 		userServiceImpl.deleteById(theId);
 
 		// redirect to members
-		return "redirect:/members";
+		return "redirect:/admins";
 
 	}
 	
-	
-	
-	
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-    @GetMapping("/trainers")
-    public String showTrainers(Model model) {
-        List<User> trainers = userServiceImpl.getUsersByRole("ROLE_TRAINER");
-        model.addAttribute("users", trainers);
-        return "trainers";
-    }
-    
-    @GetMapping("/admins")
+	 @GetMapping("/admins")
     public String showAdmin(Model model) {
         List<User> admins = userServiceImpl.getAll();
         model.addAttribute("users", admins);

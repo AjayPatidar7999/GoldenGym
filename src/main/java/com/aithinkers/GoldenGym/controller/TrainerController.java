@@ -3,6 +3,7 @@ package com.aithinkers.GoldenGym.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -10,6 +11,7 @@ import com.aithinkers.GoldenGym.entity.User;
 import com.aithinkers.GoldenGym.service.UserService;
 import com.aithinkers.GoldenGym.service.UserServiceImpl;
 
+@Controller
 public class TrainerController {
 
 
@@ -32,22 +34,22 @@ public class TrainerController {
 	
 	 
 
-	    @GetMapping("/contact")
+	    @GetMapping("/trainer/contact")
 	    public String showContactPage() {
 	        return "trainer/contact";
 	    }
 
-	    @GetMapping("/about")
+	    @GetMapping("/trainer/about")
 	    public String showAboutPage() {
 	        return "trainer/about";
 	    }
 
-	    @GetMapping("/career")
+	    @GetMapping("/trainer/career")
 	    public String showCareerPage() {
 	        return "trainer/career";
 	    }
 
-	    @GetMapping("/help")
+	    @GetMapping("/trainer/help")
 	    public String showHelpPage() {
 	        return "trainer/help";
 	    }

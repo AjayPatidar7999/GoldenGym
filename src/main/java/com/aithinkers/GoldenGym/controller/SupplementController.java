@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -81,6 +82,39 @@ public class SupplementController {
         	return "Supplement/discount";
         	
         }
+        
+     // Show form to add supplement
+        @GetMapping("/add")
+        public String showAddForm(Model model) {
+            model.addAttribute("supplement", new Supplement());
+            return "Supplement/add-supplement";
+        }
+
+     // Show form to update supplement
+        @GetMapping("/update")
+        public String showUpdateForm(@RequestParam("id") Long id, Model model) {
+            Supplement supplement = supplementService.getSupplementById(id);
+            model.addAttribute("supplement", supplement);
+            return "Supplement/update-supplement";  // Make sure folder & file name match exactly
+        }
+
+        // Save or update supplement
+        @PostMapping("/save")
+        public String saveSupplement(@ModelAttribute("supplement") Supplement supplement) {
+            supplementService.saveSupplement(supplement);  // Handles both new and existing supplements
+            return "redirect:/supplements/slist";
+        }
+
+        // Delete supplement
+        @GetMapping("/delete")
+        public String deleteSupplement(@RequestParam("id") Long id) {
+            supplementService.deleteSupplement(id);
+            return "redirect:/supplements/slist";
+        }
+        
+        
+        
+        
     }
 
 

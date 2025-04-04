@@ -27,10 +27,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
         .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/register", "/otp-verification", "/login","/home").permitAll()
-                .requestMatchers("/members/**").hasAuthority("ROLE_MEMBER") // Ensure this is correct
-                .requestMatchers("/trainers/**").hasAuthority("ROLE_TRAINER")
-                .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/register", "/otp-verification", "/login","/home","/members/**","/trainers/**","/admins/**").permitAll()
+               // .requestMatchers("/home").hasAnyAuthority("ROLE_MEMBER","ROLE_TRAINER","ROLE_ADMIN")
+                //.requestMatchers("/members/**").hasAnyAuthority("ROLE_MEMBER","ROLE_ADMIN") // Ensure this is correct
+               // .requestMatchers("/trainers/**").hasAnyAuthority("ROLE_TRAINER","ROLE_ADMIN")
+                //.requestMatchers("/admins/**").hasAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -64,10 +65,10 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
+  /*  @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
-    } 
+    } */
     
     @Bean
     public AuthenticationManager authManager(HttpSecurity http, CustomAuthenticationProvider authProvider) throws Exception {
