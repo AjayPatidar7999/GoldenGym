@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -27,11 +26,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
         .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/register", "/otp-verification", "/login","/home","/members/**","/trainers/**","/admins/**").permitAll()
-               // .requestMatchers("/home").hasAnyAuthority("ROLE_MEMBER","ROLE_TRAINER","ROLE_ADMIN")
-                //.requestMatchers("/members/**").hasAnyAuthority("ROLE_MEMBER","ROLE_ADMIN") // Ensure this is correct
-               // .requestMatchers("/trainers/**").hasAnyAuthority("ROLE_TRAINER","ROLE_ADMIN")
-                //.requestMatchers("/admins/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/register", "/otp-verification", "/login","/home").permitAll()
+               .requestMatchers("/home").hasAnyAuthority("ROLE_MEMBER","ROLE_TRAINER","ROLE_ADMIN")
+                .requestMatchers("/members/**").hasAnyAuthority("ROLE_MEMBER","ROLE_ADMIN") // Ensure this is correct
+               .requestMatchers("/trainers/**").hasAnyAuthority("ROLE_TRAINER","ROLE_ADMIN")
+                .requestMatchers("/admins/**").hasAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -48,27 +47,21 @@ public class SecurityConfig {
             )
             // Uncomment if using API requests
             .exceptionHandling(exception -> exception
-                .accessDeniedPage("/access-denied")
+                .accessDeniedPage("/access-denied")     
             );
         http.csrf(customizer ->customizer.disable());
 
         return http.build();
     }
 
-    @Bean
-    public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
-        return new CustomLoginSuccessHandler();
-    }
+  
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-  /*  @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    } */
+  
     
     @Bean
     public AuthenticationManager authManager(HttpSecurity http, CustomAuthenticationProvider authProvider) throws Exception {
@@ -78,11 +71,5 @@ public class SecurityConfig {
     }
 
 
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsServiceImpl);
-        authProvider.setPasswordEncoder(new BCryptPasswordEncoder(12));
-        return authProvider;
-    }
+ 
 }

@@ -69,7 +69,7 @@ public class UserController {
 
         authorityService.saveAuthority(authority);
         
-        // ✅ **Send OTP to user after registration**
+        // Send OTP to user after registration**
         otpService.createOtp(user);
 
         return "redirect:/otp-verification?mobile=" + user.getMobile();

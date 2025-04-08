@@ -52,7 +52,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
                 .authorities(user.getAuthorities().stream()
-                        .map(authority -> "ROLE_" + authority.getRole()) // Ensure roles have "ROLE_"
+                        .map(authority ->  authority.getRole()) // Ensure roles have "ROLE_"
                         .toArray(String[]::new))
                 .accountExpired(false)
                 .accountLocked(false)
